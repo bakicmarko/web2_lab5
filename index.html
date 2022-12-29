@@ -1,5 +1,19 @@
 <!DOCTYPE html>
 
-<head> </head>
+<head>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="style.css" />
+  <title>Simple PWA</title>
+</head>
 
-<body></body>
+<body>
+  dhjksajsalkdj
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker
+        .register("./sw.js")
+        .then((res) => console.log("SW registered!", res))
+        .catch((err) => console.log("SW registration problem!, ", err));
+    }
+  </script>
+</body>
