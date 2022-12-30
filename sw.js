@@ -4,6 +4,7 @@ const filesToCache = [
   "index.html",
   "offline.html",
   "error404.html",
+  "favicon.ico",
 ];
 
 const staticCacheName = "static-cache-v1";
