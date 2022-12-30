@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="theme-color" content="green" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Simple PWA</title>
+
+    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+    <link rel="apple-touch-icon" href="assets/icons/original.png" />
+    <link rel="manifest" href="manifest.json" />
+    <link rel="stylesheet" href="style.css" />
+
+    <style>
+      .center{
+        text-align: center;
+      }
+      .btn{
+        color: white;
+        background-color: lightcoral;
+        border: none;
+        padding: 10px;
+        font-weight: 600;
+      }
+      .btnCont{
+        margin-top: 25px;
+      }
+      .container {
+        margin: 10px;
+      }
+      .leftCont {
+        text-align: center;
+      }
+      h1 {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="leftCont">
+        <h1>Hello, welcome to simple PWA example.</h1>
+        This is error 404 page
+        <div class="btnCont">
+          <button class="btn center" id="captureImgBtn">Take a picture</button>
+      </div>
+        </div>
+
+    <script>
+      var btn = document.getElementById("captureImgBtn");
+      btn.onclick = ()=>{
+        console.log("#clicked")
+      }
+     
+    </script>
+  </body>
+</html>
