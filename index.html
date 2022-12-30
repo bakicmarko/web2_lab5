@@ -1,22 +1,46 @@
 <!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="theme-color" content="green" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Simple PWA</title>
 
-<head>
-  <meta name="theme-color" content="green" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="apple-touch-icon" href="assets/icons/original.png" />
-  <link rel="manifest" href="manifest.json" />
-  <link rel="stylesheet" href="style.css" />
-  <title>Simple PWA</title>
-</head>
+    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+    <link rel="apple-touch-icon" href="assets/icons/original.png" />
+    <link rel="manifest" href="manifest.json" />
+    <link rel="stylesheet" href="style.css" />
 
-<body>
-  dhjksajsalkdj
-  <script>
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker
-        .register("./sw.js")
-        .then((res) => console.log("SW registered!", res))
-        .catch((err) => console.log("SW registration problem!, ", err));
-    }
-  </script>
-</body>
+    <style>
+      .container {
+        margin: 10px;
+        display: flex;
+      }
+      .leftCont {
+        flex: 2;
+        text-align: center;
+      }
+      .rightCont {
+        flex: 1;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="leftCont"><h1>Hello, welcome to simple PWA example.</h1></div>
+      <div class="rightCont">
+        <img src="/assets/icons/original.png" alt="logo" />
+      </div>
+    </div>
+
+    <script>
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker
+          .register("./sw.js")
+          .then((res) => console.log("SW registered!", res))
+          .catch((err) => console.log("SW registration problem!, ", err));
+      }
+    </script>
+  </body>
+</html>
