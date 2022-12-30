@@ -5,38 +5,38 @@ const filesToCache = [
   "offline.html",
   "error404.html",
   "favicon.ico",
+  "assets/icons/icon-72x72.png",
+  "assets/icons/icon-96x96.png",
+  "assets/icons/icon-144x144.png",
+  "assets/icons/icon-128x128.png",
+  "assets/icons/icon-144x144.png",
+  "assets/icons/icon-152x152.png",
+  "assets/icons/icon-192x192.png",
+  "assets/icons/icon-384x384.png",
+  "assets/icons/icon-512x512.png",
 ];
 
 const staticCacheName = "static-cache-v1";
 
 self.addEventListener("install", (event) => {
-  console.log("Attempting to install service worker and cache static assets");
-  event.waitUntil(
-    caches.open(staticCacheName).then((cache) => {
-      return cache.addAll(filesToCache);
-    })
-  );
+  console.log("Service Worker installation");
+  async () => {
+    const cch = await caches.open(filesToCache);
+    await cch.addAll(filesToCache);
+    console.log("Files cached...");
+  };
 });
 
 self.addEventListener("activate", (event) => {
-  console.log(
-    "*************************************************************************************"
-  );
-  console.log(
-    "******************   Activating new service worker... *******************************"
-  );
-  console.log(
-    "*************************************************************************************"
-  );
-
-  const cacheWhitelist = [staticCacheName];
-  // Ovako možemo obrisati sve ostale cacheve koji nisu naš
+  console.log("New service worker acctivated!");
+  console.log("DELETING old cache...");
   event.waitUntil(
-    caches.keys().then((cacheNames) => {
+    caches.keys().then((cchKeys) => {
       return Promise.all(
-        cacheNames.map((cacheName) => {
-          if (cacheWhitelist.indexOf(cacheName) === -1) {
-            return caches.delete(cacheName);
+        cchKeys.map((key) => {
+          if (staticCacheName.indexOf(key) === -1) {
+            console.log("deleting: " + key);
+            return caches.delete(key);
           }
         })
       );
@@ -53,14 +53,10 @@ self.addEventListener("fetch", (event) => {
           console.log("Found " + event.request.url + " in cache!");
           return response;
         }
-        console.log(
-          "----------------->> Network request for ",
-          event.request.url
-        );
         return fetch(event.request).then((response) => {
           console.log("response.status = " + response.status);
           if (response.status === 404) {
-            return caches.match("404.html");
+            return caches.match("eror404.html");
           }
           return caches.open(staticCacheName).then((cache) => {
             console.log(">>> Caching: " + event.request.url);
