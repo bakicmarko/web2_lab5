@@ -21,8 +21,10 @@ const staticCacheName = "static-cache-v1";
 self.addEventListener("install", (event) => {
   console.log("Service Worker installation");
   event.waitUntil(
-    caches.open(filesToCache).then((cch) => cch.addAll(filesToCache))
+    caches.open(staticCacheName).then((cch) => cch.addAll(filesToCache))
   );
+  console.log("Files cached!");
+
   //async () => {
   //  const cch = await caches.open(filesToCache);
   //  await cch.addAll(filesToCache);
