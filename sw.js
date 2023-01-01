@@ -81,9 +81,10 @@ self.addEventListener("activate", (event) => {
 //);
 
 self.addEventListener("fetch", (event) => {
-  event
-    .respondWith(
-      caches.open(staticCacheName).then((cch) => {
+  event.respondWith(
+    caches
+      .open(staticCacheName)
+      .then((cch) => {
         cch.match(event.request).then((cchResponse) => {
           console.log(cchResponse);
           console.log("--------------");
@@ -100,14 +101,14 @@ self.addEventListener("fetch", (event) => {
             });
         });
       })
-    )
-    .catch((error) => {
-      console.log(event);
-      console.log(error);
-      console.log("Error", event.request.url, error);
-      // ovdje možemo pregledati header od zahtjeva i možda vratiti različite fallback sadržaje
-      // za različite zahtjeve - npr. ako je zahtjev za slikom možemo vratiti fallback sliku iz cachea
-      // ali zasad, za sve vraćamo samo offline.html:
-      return caches.match("offline.html");
-    });
+      .catch((error) => {
+        console.log(event);
+        console.log(error);
+        console.log("Error", event.request.url, error);
+        // ovdje možemo pregledati header od zahtjeva i možda vratiti različite fallback sadržaje
+        // za različite zahtjeve - npr. ako je zahtjev za slikom možemo vratiti fallback sliku iz cachea
+        // ali zasad, za sve vraćamo samo offline.html:
+        return caches.match("offline.html");
+      })
+  );
 });
