@@ -9,7 +9,7 @@ const filesToCache = [
   "assets/icons/icon-96x96.png",
   "assets/icons/icon-144x144.png",
   "assets/icons/icon-128x128.png",
-  "assets/icons/icon-144x144.png",
+  //"assets/icons/icon-144x144.png",
   "assets/icons/icon-152x152.png",
   "assets/icons/icon-192x192.png",
   "assets/icons/icon-384x384.png",
@@ -20,11 +20,14 @@ const staticCacheName = "static-cache-v1";
 
 self.addEventListener("install", (event) => {
   console.log("Service Worker installation");
-  async () => {
-    const cch = await caches.open(filesToCache);
-    await cch.addAll(filesToCache);
-    console.log("Files cached...");
-  };
+  event.waitUntil(
+    caches.open(filesToCache).then((cch) => cch.addAll(filesToCache))
+  );
+  //async () => {
+  //  const cch = await caches.open(filesToCache);
+  //  await cch.addAll(filesToCache);
+  //  console.log("Files cached...");
+  //};
 });
 
 self.addEventListener("activate", (event) => {
@@ -44,33 +47,65 @@ self.addEventListener("activate", (event) => {
   );
 });
 
+//self.addEventListener("fetch", (event) => {
+// event.respondWith(
+//   caches
+//     .match(event.request)
+//     .then((response) => {
+//       if (response) {
+//         console.log("Found " + event.request.url + " in cache!");
+//         return response;
+//       }
+//       return fetch(event.request).then((response) => {
+//         console.log("response.status = " + response.status);
+//         if (response.status === 404) {
+//           return caches.match("eror404.html");
+//         }
+//         return caches.open(staticCacheName).then((cache) => {
+//           console.log(">>> Caching: " + event.request.url);
+//           cache.put(event.request.url, response.clone());
+//           return response;
+//         });
+//       });
+//     })
+//     .catch((error) => {
+//       console.log("Error", event.request.url, error);
+//       // ovdje možemo pregledati header od zahtjeva i možda vratiti različite fallback sadržaje
+//       // za različite zahtjeve - npr. ako je zahtjev za slikom možemo vratiti fallback sliku iz cachea
+//       // ali zasad, za sve vraćamo samo offline.html:
+//       return caches.match("offline.html");
+//     })
+// );
+//);
+
 self.addEventListener("fetch", (event) => {
-  event.respondWith(
-    caches
-      .match(event.request)
-      .then((response) => {
-        if (response) {
-          console.log("Found " + event.request.url + " in cache!");
-          return response;
-        }
-        return fetch(event.request).then((response) => {
-          console.log("response.status = " + response.status);
-          if (response.status === 404) {
-            return caches.match("eror404.html");
-          }
-          return caches.open(staticCacheName).then((cache) => {
-            console.log(">>> Caching: " + event.request.url);
-            cache.put(event.request.url, response.clone());
-            return response;
-          });
+  event
+    .respondWith(
+      caches.open(staticCacheName).then((cch) => {
+        cch.match(event.request).then((cchResponse) => {
+          console.log(cchResponse);
+          console.log("--------------");
+          if (cchResponse) {
+            console.log("From cache: " + cchResponse.url);
+            return cchResponse;
+          } else
+            return fetch(event.request).then((netwResponse) => {
+              if (netwResponse.status === 404)
+                return caches.match("error404.html");
+              console.log("Caching " + event.request.url);
+              cch.put(event.request, netwResponse.clone());
+              return netwResponse;
+            });
         });
       })
-      .catch((error) => {
-        console.log("Error", event.request.url, error);
-        // ovdje možemo pregledati header od zahtjeva i možda vratiti različite fallback sadržaje
-        // za različite zahtjeve - npr. ako je zahtjev za slikom možemo vratiti fallback sliku iz cachea
-        // ali zasad, za sve vraćamo samo offline.html:
-        return caches.match("offline.html");
-      })
-  );
+    )
+    .catch((error) => {
+      console.log(event);
+      console.log(error);
+      console.log("Error", event.request.url, error);
+      // ovdje možemo pregledati header od zahtjeva i možda vratiti različite fallback sadržaje
+      // za različite zahtjeve - npr. ako je zahtjev za slikom možemo vratiti fallback sliku iz cachea
+      // ali zasad, za sve vraćamo samo offline.html:
+      return caches.match("offline.html");
+    });
 });
