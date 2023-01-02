@@ -2,7 +2,6 @@ const filesToCache = [
   "/",
   "manifest.json",
   "index.html",
-  "offline.html",
   "error404.html",
   "style.css",
   "favicon.ico",
@@ -20,7 +19,15 @@ const cchName = "static-cache-v1";
 
 self.addEventListener("install", (event) => {
   console.log("Service Worker installation");
-  event.waitUntil(caches.open(cchName).then((cch) => cch.addAll(filesToCache)));
+  event.waitUntil(
+    caches
+      .open(cchName)
+      .then((cch) => cch.addAll(filesToCache))
+      .catch((err) => {
+        console.log(event);
+        console.log("cachallerr");
+      })
+  );
   console.log("Files cached!");
 
   //async () => {

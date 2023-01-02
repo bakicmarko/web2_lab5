@@ -10,7 +10,6 @@
     <link rel="apple-touch-icon" href="assets/icons/original.png" />
     <link rel="manifest" href="manifest.json" />
     <link rel="stylesheet" href="style.css" />
-
   </head>
 
   <body>
@@ -19,21 +18,69 @@
         <h1>Hello, welcome to simple PWA example.</h1>
         This is web site is online
         <div class="btnCont">
-          <button class="btn center" id="captureImgBtn">Take a picture</button>
-      </div>
+          <button class="btn center" id="startRecord">start</button>
         </div>
+        <div class="btnCont">
+          <button class="btn center" id="stopRecord">stop</button>
+        </div>
+        <div id="audioclips"><h3>Recordings</h3></div>
+      </div>
+    </div>
 
     <script>
-      var btn = document.getElementById("captureImgBtn");
-      btn.onclick = ()=>{
-        console.log("#clicked")
-      }
       if ("serviceWorker" in navigator) {
         navigator.serviceWorker
           .register("./sw.js")
           .then((res) => console.log("SW registered!", res))
           .catch((err) => console.log("SW registration problem!, ", err));
       }
+
+      let recording;
+      let chunks = [];
+      let mediaRecorder;
+      let stream;
+
+      document
+        .getElementById("startRecord")
+        .addEventListener("click", async function () {
+          console.log("Recording started...");
+          if (!mediaRecorder) {
+            if (!navigator.mediaDevices || !MediaRecorder) {
+              console.log("Recording not supported");
+              return;
+            }
+            stream = await navigator.mediaDevices.getUserMedia({
+              audio: true,
+              video: false,
+            });
+            mediaRecorder = new MediaRecorder(stream);
+            mediaRecorder.addEventListener("dataavailable", (e) => {
+              chunks.push(e.data);
+            });
+            mediaRecorder.addEventListener("stop", () => {
+              recording = new Blob(chunks);
+              chunks = [];
+              let blobURL = URL.createObjectURL(recording);
+              console.log("Blob URL: " + dURL);
+
+              const audio = document.createElement("audio");
+              audio.setAttribute("controls", "");
+              audio.src = blobURL;
+
+              const adClps = document.getElementById("audioclips");
+              console.log(adClps);
+              adClps.appendChild(audio);
+              console.log("New recording added!");
+            });
+          }
+          mediaRecorder.start();
+        });
+
+      document
+        .getElementById("stopRecord")
+        .addEventListener("click", function () {
+          mediaRecorder.stop();
+        });
     </script>
   </body>
 </html>
