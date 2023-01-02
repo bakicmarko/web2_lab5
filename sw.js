@@ -72,6 +72,17 @@ self.addEventListener("fetch", (event) => {
   );
 });
 
+self.addEventListener("sync", async function (event) {
+  if (event.tag == "fetchJoke") {
+    console.log("sync listening");
+    event.waitUntil(
+      self.registration.showNotification("You are back online!!!", {
+        body: "Get more jokes",
+      })
+    );
+  }
+});
+
 //self.addEventListener("fetch", (event) => {
 //  event.respondWith(
 //    caches

@@ -23,16 +23,57 @@
         <div class="btnCont">
           <button class="btn center" id="stopRecord">stop</button>
         </div>
-        <div id="audioclips"><h3>Recordings</h3></div>
+        <div id="audioclips container pad"><h3>Recordings</h3></div>
+        <div><button class="btn" id="getJokeBtn">JOKE</button></div>
+        <div class="jokes container pad" id="jokes"><h3>Jokes</h3></div>
       </div>
     </div>
 
     <script>
+      Notification.requestPermission();
       if ("serviceWorker" in navigator) {
         navigator.serviceWorker
           .register("./sw.js")
           .then((res) => console.log("SW registered!", res))
           .catch((err) => console.log("SW registration problem!, ", err));
+
+        document
+          .getElementById("getJokeBtn")
+          .addEventListener("click", async function () {
+            console.log("joking....");
+            if (navigator.onLine) {
+              await fetch("https://official-joke-api.appspot.com/jokes/random")
+                .then((res) => {
+                  console.log(res.status);
+                  return res.json();
+                })
+                .then((data) => {
+                  const qes = document.createElement("p");
+                  const punch = document.createElement("p");
+                  qes.innerText = data["setup"];
+                  punch.innerText = data["punchline"];
+
+                  const jks = document.getElementById("jokes");
+
+                  jks.appendChild(qes);
+                  jks.appendChild(punch);
+                  jks.appendChild(document.createElement("hr"));
+
+                  //console.log(data["setup"]);
+                  //console.log(data["punchline"]);
+                })
+                .catch((e) => {
+                  console.log(e);
+                  navigator.serviceWorker.ready.then((swReg) => {
+                    return swReg.sync.register("fetchJoke");
+                  });
+                });
+            } else {
+              navigator.serviceWorker.ready.then((swReg) => {
+                return swReg.sync.register("fetchJoke");
+              });
+            }
+          });
       }
 
       let recording;

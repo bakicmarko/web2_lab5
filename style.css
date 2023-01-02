@@ -25,3 +25,7 @@
 h1 {
     text-decoration: underline;
 }
+
+.pad{
+    padding: 15px;
+}
