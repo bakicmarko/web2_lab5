@@ -80,10 +80,16 @@
       let chunks = [];
       let mediaRecorder;
       let stream;
+      let isRecActive = false;
 
       document
         .getElementById("startRecord")
         .addEventListener("click", async function () {
+          if (isRecActive) {
+            console.log("Recording in progress!");
+            return;
+          }
+          isRecActive = true;
           console.log("Recording started...");
           if (!mediaRecorder) {
             if (!navigator.mediaDevices || !MediaRecorder) {
@@ -121,6 +127,7 @@
         .getElementById("stopRecord")
         .addEventListener("click", function () {
           mediaRecorder.stop();
+          isRecActive = false;
         });
     </script>
   </body>
