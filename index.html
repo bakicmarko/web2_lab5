@@ -115,7 +115,7 @@
               audio.src = blobURL;
 
               const adClps = document.getElementById("audioclips");
-              console.log(adClps);
+              // console.log(adClps);
               adClps.appendChild(audio);
               console.log("New recording added!");
             });
@@ -126,7 +126,9 @@
       document
         .getElementById("stopRecord")
         .addEventListener("click", function () {
-          mediaRecorder.stop();
+          if (mediaRecorder.state != "inactive") {
+            mediaRecorder.stop();
+          }
           isRecActive = false;
         });
     </script>
