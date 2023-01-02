@@ -102,7 +102,7 @@
               recording = new Blob(chunks);
               chunks = [];
               let blobURL = URL.createObjectURL(recording);
-              console.log("Blob URL: " + dURL);
+              console.log("Blob URL: " + blobURL);
 
               const audio = document.createElement("audio");
               audio.setAttribute("controls", "");
